@@ -101,7 +101,9 @@ function SignupPage() {
         login(safeUser)
         navigate('/')
       } catch (err) {
-        setErrors(prev => ({ ...prev, api: err.message || 'Registration failed' }))
+        const msg = err.message || 'Registration failed'
+        const isDuplicateEmail = msg.includes('duplicate key') || msg.includes('E11000')
+        setErrors(prev => ({ ...prev, api: isDuplicateEmail ? 'This email is already registered' : msg }))
       }
     }
   }

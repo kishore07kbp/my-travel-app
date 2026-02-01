@@ -9,24 +9,10 @@ router.post('/', async (req, res) => {
     await user.save();
     res.status(201).json(user);
   } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// Login: verify email + password, return user (without password)
-router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: 'User not found' });
-    }
-    if (user.password !== password) {
-      return res.status(401).json({ message: 'Password incorrect' });
-    }
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const isDuplicateEmail = error.code === 11000 || String(error.code) === '11000' ||
+      (error.message && error.message.includes('duplicate key'));
+    const message = isDuplicateEmail ? 'This email is already registered' : error.message;
+    res.status(400).json({ message });
   }
 });
 
