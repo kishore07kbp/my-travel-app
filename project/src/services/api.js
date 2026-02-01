@@ -1,4 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = `${import.meta.env.VITE_API_URL}/api`;
+
+
 
 // Safely parse JSON from response (avoids "Unexpected end of JSON input" when body is empty)
 async function parseJson(response) {
