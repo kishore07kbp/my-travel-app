@@ -29,6 +29,36 @@ router.get('/email/:email', async (req, res) => {
   }
 });
 
+// LOGIN USER
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Basic validation
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    // Plain password check (OK for now)
+    if (user.password !== password) {
+      return res.status(400).json({ message: 'Invalid password' });
+    }
+
+    res.status(200).json({
+      message: 'Login successful',
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 // Get all users
 router.get('/', async (req, res) => {
   try {
